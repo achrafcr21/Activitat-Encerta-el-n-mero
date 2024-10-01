@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h2>Elige el rango para adivinar el número:</h2>
+        <input id="minNum" type="number" placeholder="Número mínimo">
+        <input id="maxNum" type="number" placeholder="Número máximo">
+        <button onclick="reiniciaPartida()">Comenzar Juego</button>
+        <button id="reinicia" onclick="reiniciaPartida()" disabled>Reinicia</button>
+    </header>
+    <main>
+        <h3>Busca el número!</h3>
+        <h3 id="interrogant">?</h3> 
+        <h4 id="pistes">Comencem la partida...</h4>
+    </main>
+    <footer>
+        <input id="num" type="number">
+        <button onclick="jugada()">Prova!</button>
+        <p id="jugades">Jugades: 20</p>
+        <p id="maxPunts">Total punts: 0</p> 
+    </footer>
+    <script>
+        // Constants
+        const numJugadesTotal = 20;
+
+        // Variables
+        let numJugades = numJugadesTotal;
+        let secretNumber;
+        let maxPunts = 0;
+
+        function reiniciaPartida() {
+            let min = parseInt(document.getElementById("minNum").value, 10);
+            let max = parseInt(document.getElementById("maxNum").value, 10);
+            if (isNaN(min) || isNaN(max) || min >= max) {
+                alert("Por favor, introduce un rango válido.");
+                return;
+            }
+            secretNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            numJugades = numJugadesTotal;
+            document.getElementById("num").value = "";
+            document.getElementById("pistes").innerText = "Comencem la partida...";
+            document.getElementById("jugades").innerText = `Jugades: ${numJugades}`;
+            document.getElementById("reinicia").disabled = true;
+            document.getElementById("num").focus(); 
+            document.getElementById("interrogant").innerText= "?";
+        }
+
+        function jugada() {
+            let num = Number(document.getElementById("num").value);
+            if (isNaN(num)) {
+                alert("El número introduït no és correcte");
+                return;
+            }
+
+            numJugades--;
+            document.getElementById("jugades").innerText = `Jugades: ${numJugades}`;
+
+            if (num < secretNumber) {
+                document.getElementById("pistes").innerText = "El número és massa petit!";
+            } else if (num > secretNumber) {
+                document.getElementById("pistes").innerText = "El número és massa gran!";
+            } else {
+                document.getElementById("pistes").innerText = "Has encertat el número!";
+                document.getElementById("interrogant").innerText= `el numero secret era ${secretNumber}`;
+                document.getElementById("reinicia").disabled = false;
+                document.body.style.backgroundColor = "green";
+                if (numJugades > maxPunts) {
+                    maxPunts = numJugades;
+                    document.getElementById("maxPunts").innerText = `Total punts: ${maxPunts}`;
+                }
+            }
+
+            if (numJugades === 0) {
+                document.getElementById("pistes").innerText = `Joc acabat. El número era ${secretNumber}`;
+                document.getElementById("reinicia").disabled =false;
+            }
+        }
+    </script>
+</body>
+</html>
